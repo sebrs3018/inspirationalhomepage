@@ -12,6 +12,29 @@ import { width } from '@mui/system';
 import { Chip } from '@mui/material';
 
 import Typography from '@mui/material/Typography';
+import { IconButton } from '@mui/material';
+
+
+/* Styled components */
+import {
+  AsideSection,
+  BackgroundImage,
+  TheySaidSoContainer,
+  TheySaidSoAttribution,
+  QuoteContainer
+} from './StyledComponents/styledComponents';
+
+
+
+/* Icons */
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+
+/* Theming */
+import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 
 
 const accesskey = 'nvsbiflO7X6Hlunn1K1KCQtJAb-bb79xr0LLQgAnndE';
@@ -25,7 +48,7 @@ const unsplash = createApi({
 
 const getRandomPhotoAsync = async (setUrlFunc) => {
   try {
-    const result = await unsplash.photos.get({ photoId: 'mtNweauBsMQ' });
+    const result = await unsplash.photos.getRandom();
     if (result.errors) {
       console.log('some error happened!');
     }
@@ -41,55 +64,91 @@ const getRandomPhotoAsync = async (setUrlFunc) => {
 }
 
 
+const QuotesApiUrl = 'https://quotes.rest/qod?category=inspire&language=en';
+
+const getQuoteOfTheDay = async (setQuote) => {
+  try {
+    const data = await fetch(QuotesApiUrl);
+    const json = await data.json();
+    const { quotes } = json.contents;
+    const { quote, author } = quotes[0];  //Getting the single quote of the day
+    setQuote({ quote, author });
+  }
+  catch (err) {
+
+  }
+};
+
+
 function App() {
 
   const [randomPhoto, setRandomPhoto] = useState(''); //Da gestire con redux
+  const [qod, setQod] = useState({});
 
   useEffect(() => {
     getRandomPhotoAsync(setRandomPhoto);
   }, [randomPhoto]);
 
+  useEffect(() => {
+    getQuoteOfTheDay(setQod);
+  }, [qod]);
+
+  const styles = {
+    testBackground: {
+      backgroundImage:
+        `linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url(${randomPhoto})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }
+  };
 
 
-  console.log(randomPhoto);
+
+
   //TODO: pensare a come inserire background trasparente che legge stato => idea: styled components!
   return (
     <>
-      <div className="background" style={{ backgroundImage: `url(${randomPhoto})` }} >
-        {/* <img src={randomPhoto} /> */}
-      </div>
-      <Grid container spacing={2} marginTop={0} height={"100%"}>
+      <Grid container spacing={2}
+        marginTop={0}
+        paddingBottom={2}
+        height={"100%"}
+        style={styles.testBackground}
+      >
+        {/* Previous Slide Section */}
         <Grid item xs={1}>
-          hey
+          <AsideSection>
+            <IconButton aria-label='previous foto' sx={{ maxWidth: 50 }}>
+              <ArrowBackIosNewIcon fontSize='large' />
+            </IconButton>
+          </AsideSection>
         </Grid>
+        {/* Middle content area */}
         <Grid item xs={10}>
           <Stack
+            spacing={2}
             height={"100%"}
             direction="column"
-            justifyContent="space-between"
+            justifyContent="space-around"
             alignItems="center">
-            <Typography variant="h3" gutterBottom component="div">
-              How is your day going?
-            </Typography>
-
-            
-            <Paper elevation={2} sx={{ backgroundColor: 'white', width: "100%", height: "60%", opacity: "0.9" }} >
-
+            <ThemeProvider theme={theme}>
+              <Typography variant="h3" gutterBottom component="div">
+                How is your day going?
+              </Typography>
+            </ThemeProvider>
+            <Paper elevation={2} sx={{ backgroundColor: 'white', width: "100%", height: "70%" }} >
               <Stack
                 height={"100%"}
                 alignItems="center"
               >
-
-                <div style={{ height: "50%", width: "90%", display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ height: "30%", width: "90%", display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {/* Text field area */}
                   <TextField id="outlined-basic" label="Outlined" variant="outlined" fullWidth />
                 </div>
-
                 {/* Chips Area */}
-                <div style={{ height: "50%", width: "95%" }}>
+                <div style={{ height: "70%", width: "95%" }}>
                   <Paper elevation={2} sx={{ height: "95%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <div style={{ height: "95%", width: "95%" }}>
-                      <Chip 
+                      <Chip
                         label="Clickable Deletable"
                         onClick={() => console.log('click!')}
                         onDelete={() => console.log('delete!')}
@@ -101,12 +160,35 @@ function App() {
               </Stack>
             </Paper>
 
+            <Grid container spacing={2}>
 
-            <div>C</div>
+              <Grid item xs={1}>
+                <TheySaidSoContainer>
+                  <TheySaidSoAttribution href="https://theysaidso.com" title="Powered by quotes from theysaidso.com" >
+                    <img src="https://theysaidso.com/branding/theysaidso.png" height="auto" width="100%" alt="theysaidso.com" />
+                  </TheySaidSoAttribution>
+                </TheySaidSoContainer>
+              </Grid>
+              <Grid item xs={11}>
+              <ThemeProvider theme={theme}>
+                  <Typography variant="subtitle1" gutterBottom component="div" textAlign={"center"}>
+                    {qod.quote}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom component="div" textAlign={"center"}>
+                    {qod.author}
+                  </Typography>
+              </ThemeProvider>
+              </Grid>
+            </Grid>
           </Stack>
         </Grid>
+        {/* Next Slide Section */}
         <Grid item xs={1}>
-          see
+          <AsideSection>
+            <IconButton aria-label='previous foto' sx={{ maxWidth: 50 }}>
+              <ArrowForwardIosIcon fontSize='large' />
+            </IconButton>
+          </AsideSection>
         </Grid>
       </Grid>
     </>
