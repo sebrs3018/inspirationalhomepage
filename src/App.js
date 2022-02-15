@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.css';
-import Button from '@mui/material/Button';
 import { createApi } from 'unsplash-js';
 import { Grid } from '@mui/material';
 import { Stack } from '@mui/material';
 import { Paper } from '@mui/material';
 import { TextField } from '@mui/material';
-import { width } from '@mui/system';
 import { Chip } from '@mui/material';
 
 import Typography from '@mui/material/Typography';
@@ -18,11 +14,8 @@ import { IconButton } from '@mui/material';
 /* Styled components */
 import {
   AsideSection,
-  BackgroundImage,
   TheySaidSoContainer,
-  TheySaidSoAttribution,
-  QuoteContainer
-} from './StyledComponents/styledComponents';
+  TheySaidSoAttribution} from './StyledComponents/styledComponents';
 
 
 
@@ -36,9 +29,6 @@ import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/s
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 
-
-const accesskey = 'nvsbiflO7X6Hlunn1K1KCQtJAb-bb79xr0LLQgAnndE';
-const baseUrl = `https://api.unsplash.com/photos/?client_id=${accesskey}/random`;
 
 const unsplash = createApi({
   accessKey: 'nvsbiflO7X6Hlunn1K1KCQtJAb-bb79xr0LLQgAnndE',
