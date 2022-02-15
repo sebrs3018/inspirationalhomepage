@@ -8,20 +8,22 @@ import { TextField } from '@mui/material';
 import { Chip } from '@mui/material';
 
 import Typography from '@mui/material/Typography';
-import { IconButton } from '@mui/material';
-
+import { IconButton, Button } from '@mui/material';
 
 /* Styled components */
 import {
   AsideSection,
   TheySaidSoContainer,
-  TheySaidSoAttribution} from './StyledComponents/styledComponents';
+  TheySaidSoAttribution
+} from './StyledComponents/styledComponents';
 
 
 
 /* Icons */
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import WbCloudyIcon from '@mui/icons-material/WbCloudy';
+
 
 /* Theming */
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
@@ -29,6 +31,7 @@ import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/s
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 
+const weatherApiKey = '6e95be333e976ec7511e4989d48958fe';
 
 const unsplash = createApi({
   accessKey: 'nvsbiflO7X6Hlunn1K1KCQtJAb-bb79xr0LLQgAnndE',
@@ -50,6 +53,27 @@ const getRandomPhotoAsync = async (setUrlFunc) => {
   }
   catch (err) {
     console.log(err);
+  }
+}
+
+const getWeatherByCityName = async (cityName) => {
+  if (!cityName) return null;
+  cityName = cityName.toLowerCase();
+
+  try {
+    const data = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${weatherApiKey}&units=metric`);
+    if (data.ok) {
+      const json = await data.json();
+      const { weather, main } = json;
+      return { iconName: weather[0].main, description: weather[0].description, temperature: main.temp };
+    }
+    else {
+      console.log('smt bad happened!');
+      return null;
+    }
+  }
+  catch (err) {
+
   }
 }
 
@@ -98,6 +122,23 @@ function App() {
   //TODO: pensare a come inserire background trasparente che legge stato => idea: styled components!
   return (
     <>
+      <Grid container style={{ width: 150, height: 100, backgroundColor: 'red', position: 'absolute', right: 0 }}>
+        <Grid item xs={6} sx={{ alignSelf: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center'}}>
+            <WbCloudyIcon fontSize='large' />
+          </div>
+        </Grid>
+        <Grid item container xs={6}>
+          <Grid item xs={12}>
+            Yo
+          </Grid>
+          <Grid item xs={12}>
+            Hey
+          </Grid>
+        </Grid>
+      </Grid>
+
+      
       <Grid container spacing={2}
         marginTop={0}
         paddingBottom={2}
@@ -125,7 +166,7 @@ function App() {
                 How is your day going?
               </Typography>
             </ThemeProvider>
-            <Paper elevation={2} sx={{ backgroundColor: 'white', width: "100%", height: "70%" }} >
+            <Paper elevation={2} sx={{ backgroundColor: 'white', width: "100%", height: "55%" }} >
               <Stack
                 height={"100%"}
                 alignItems="center"
@@ -160,14 +201,27 @@ function App() {
                 </TheySaidSoContainer>
               </Grid>
               <Grid item xs={11}>
-              <ThemeProvider theme={theme}>
-                  <Typography variant="subtitle1" gutterBottom component="div" textAlign={"center"}>
-                    {qod.quote}
-                  </Typography>
+                <ThemeProvider theme={theme}>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    spacing={2}
+                  >
+                    <Typography variant="subtitle1" width={'80%'} gutterBottom noWrap={true} component="div" textAlign={"center"}>
+                      {qod.quote}
+                    </Typography>
+                    <Button variant="text">
+                      {/* TODO: quando vi sono troppe parole, far comparire questo pulsante il quale in seguito al click deve mostrare il testo che la citazione contiene */}
+                      <Typography variant="button" gutterBottom display="block" textAlign={"center"}>Learn more</Typography>
+                    </Button>
+                  </Stack>
+
+
+
                   <Typography variant="subtitle1" gutterBottom component="div" textAlign={"center"}>
                     {qod.author}
                   </Typography>
-              </ThemeProvider>
+                </ThemeProvider>
               </Grid>
             </Grid>
           </Stack>
