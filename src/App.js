@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import {
   Grid,
@@ -9,7 +9,6 @@ import {
   Typography
 } from '@mui/material';
 
-
 /* Styled components */
 import {
   AsideSection
@@ -18,15 +17,16 @@ import {
 /* Icons */
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import WbCloudyIcon from '@mui/icons-material/WbCloudy';
 
 
 /* Theming */
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+
+/* Components */
 import { GoalInput } from './app/component/GoalInput';
 import { Goals } from './features/goals/Goals';
 import { QuoteOfTheDay } from './app/component/QuoteOfTheDay';
-
+import { Weather } from './features/weather/Weather';
 
 /* Selectors and actions */
 import { 
@@ -35,42 +35,13 @@ import {
   previousPhoto
  } from './features/photos/photosSlice';
 
-
-
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 
-const weatherApiKey = '6e95be333e976ec7511e4989d48958fe';
-
-const getWeatherByCityName = async (cityName, setWeather) => {
-  if (!cityName) return null;
-  cityName = cityName.toLowerCase();
-
-  try {
-    const data = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${weatherApiKey}&units=metric`);
-    if (data.ok) {
-      const json = await data.json();
-      const { weather, main } = json;
-      setWeather({ iconName: weather[0].main, description: weather[0].description, temperature: main.temp });
-    }
-    else {
-      console.log('smt bad happened!');
-      // return null;
-    }
-  }
-  catch (err) {
-
-  }
-}
-
-
 function App() {
-
-  const [weather, setWeather] = useState(null);
 
   const dispatch = useDispatch();
   let randomPhoto = useSelector(selectCurrentPhotoUrl);
-
 
   const handleNextClick = () => {
     dispatch(fetchRandomPhoto());
@@ -87,15 +58,6 @@ function App() {
     }
   }, []);
 
-
-  useEffect(() => {
-    if (!weather)
-      console.log('hey');
-
-    // getWeatherByCityName('sevilla', setWeather);
-  }, [weather]);
-
-
   const styles = {
     testBackground: {
       backgroundImage:
@@ -105,36 +67,9 @@ function App() {
     }
   };
 
-
-
-
   return (
     <>
-      <div style={{ position: 'absolute', right: 20, top: 20 }}>
-        <Paper elevation={1} sx={{ backgroundColor: 'rgba(40, 175, 176, 0.8)', color: 'white' }}>
-          <Grid container px={2} py={2} >
-            <Grid item xs={6} sx={{ alignSelf: 'center' }}>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <WbCloudyIcon fontSize='large' />
-              </div>
-            </Grid>
-            <Grid item container xs={6} alignItems='center' spacing={2}>
-              <Grid item xs={12}>
-                {/* {`${weather.temperature}°C`} */}
-                8.96°C
-              </Grid>
-              <Grid item xs={12}>
-                {/* {weather.description} */}
-                Clear Sky
-              </Grid>
-            </Grid>
-          </Grid>
-        </Paper>
-      </div>
-
-
-
-
+      <Weather />
       <Grid container spacing={2}
         marginTop={0}
         paddingBottom={2}
@@ -166,7 +101,7 @@ function App() {
               </ThemeProvider>
             </Paper>
 
-            <Paper elevation={1} sx={{ backgroundColor: 'rgba(207, 203, 202, 0.9)', width: "100%", height: "55%" }} >
+            <Paper elevation={1} sx={{ backgroundColor: 'rgba(207, 203, 202, 0.5)', width: "100%", height: "55%" }} >
               <Stack
                 height={"100%"}
                 alignItems="center"
@@ -180,9 +115,7 @@ function App() {
 
               </Stack>
             </Paper>
-
             <QuoteOfTheDay />
-            
           </Stack>
         </Grid>
         {/* Next Slide Section */}

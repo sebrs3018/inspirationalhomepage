@@ -5,9 +5,7 @@ const unsplash = createApi({
     fetch: fetch,
 });
 
-
-
-export const getRandomPhotoAsync = async (setUrlFunc) => {
+export const getRandomPhotoAsync = async () => {
     // try {
     const result = await unsplash.photos.getRandom({
         collectionIds: ['11649432']

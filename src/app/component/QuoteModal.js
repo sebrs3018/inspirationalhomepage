@@ -34,7 +34,7 @@ export const QuoteModal = (prop) => {
     }
 
     return <div>
-        <Button onClick={handleOpen}>{buttonText}</Button>
+        <Button variant='contained' onClick={handleOpen}>{buttonText}</Button>
         <Modal
             open={open}
             onClose={handleClose}
@@ -42,13 +42,13 @@ export const QuoteModal = (prop) => {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2" textAlign={'center'}>
+                <Typography variant="h6" component="h2" textAlign={'center'}>
                     {headerText}
                 </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <Typography sx={{ mt: 2 }} >
                     {quoteText}
                 </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }} textAlign={'center'}>
+                <Typography  sx={{ mt: 2 }} textAlign={'center'}>
                     {quoteAuthor}
                 </Typography>
             </Box>

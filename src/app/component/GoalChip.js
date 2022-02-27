@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import {
     markAsComplete,
+    markAsTodo,
     removeGoal
 } from '../../features/goals/goalsSlice';
 
@@ -14,18 +15,18 @@ const theme = createTheme({
     palette: {
         primary: {
             // Purple and green play nicely together.
-            main: '#545e75',
+            main: '#1976d2',
         },
         secondary: {
             // This is green.A700 as hex.
-            main: '#8eb8e5',
+            main: '#3EA34D',
         },
     },
 });
 
 
 
-export const GoalChip = ({ description, id }) => {
+export const GoalChip = ({ description, id, completed }) => {
     const [props, setProps] = useState({
         variant: 'outlined',
         color: 'primary'
@@ -34,19 +35,26 @@ export const GoalChip = ({ description, id }) => {
     const dispatcher = useDispatch();
 
     const handleDelete = (id) => {
-        console.log('removing');
         dispatcher(removeGoal({ id: id }));
     }
 
+    //TODO: da correggere colore!
     const handleClick = (id) => {
-        console.log('mark as complete');
-        dispatcher(markAsComplete({ id: id }));
-        setProps({
-            color: 'secondary',
-        });
+        if(!completed){
+            dispatcher(markAsComplete({ id: id }));
+            setProps({
+                color: 'secondary',
+            });
+        }
+        else{
+            dispatcher(markAsTodo({ id: id }));
+            setProps({
+                color: 'primary',
+                variant: 'outlined'
+            });
+        }
     }
 
-    //TODO: inserire colore più carino al caso "da completare" per i vari chip-task
     return <ThemeProvider theme={theme}>
         <Chip
             sx={{ marginRight: 2 }}

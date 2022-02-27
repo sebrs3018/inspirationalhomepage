@@ -8,13 +8,17 @@ import {
 
 
 export const Goals = () => {
-   
+
     const currentGoals = useSelector(selectGoals);
 
     return <div style={{ height: "70%", width: "95%" }}>
-        <Paper elevation={1} sx={{ backgroundColor: 'rgb(207, 203, 202)', height: "95%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Paper elevation={1} sx={{ backgroundColor: 'rgba(207, 203, 202, 0.5)', height: "95%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ height: "90%", width: "95%" }}>
-                {currentGoals.map((g, index) => (<GoalChip key={index} id={ g.id } description={ g.description } /> )) }
+                {currentGoals.map((g, index) => (<GoalChip key={index}
+                    id={g.id}
+                    description={g.description} 
+                    completed={g.complete}
+                    />))}
             </div>
         </Paper>
     </div>;

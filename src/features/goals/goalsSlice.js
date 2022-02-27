@@ -8,7 +8,11 @@ import { createSlice } from '@reduxjs/toolkit';
         complete: ...
     }
 */
-
+// export const toggleGoal = (id) => {
+//     return (dispatch, getState) => {
+//         // dispatch();
+//     }
+// }
 
 export const goalsSlice = createSlice({
     name: 'goals',
@@ -29,10 +33,15 @@ export const goalsSlice = createSlice({
         },
         markAsComplete: (state, action) => {
             const { goals } = state;
-            console.log(action);
             const { id } = action.payload;
             const goal = goals.find(g => g.id === id);
             goal.complete = true;
+        },
+        markAsTodo: (state, action) => {
+            const { goals } = state;
+            const { id } = action.payload;
+            const goal = goals.find(g => g.id === id);
+            goal.complete = false;
         } 
     },
 
@@ -40,5 +49,5 @@ export const goalsSlice = createSlice({
 
 export const selectGoals = (state) => state.goals.goals; 
 
-export const { insertGoal, markAsComplete, removeGoal } = goalsSlice.actions;
+export const { insertGoal, markAsComplete, removeGoal, markAsTodo } = goalsSlice.actions;
 export default goalsSlice.reducer;

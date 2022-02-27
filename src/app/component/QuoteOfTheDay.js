@@ -44,30 +44,30 @@ export const QuoteOfTheDay = () => {
 
 
 
-    return <Paper sx={{ backgroundColor: 'rgba(207, 203, 202, 0.8)', width: '100%' }}>
+    return <Paper sx={{ backgroundColor: 'rgba(207, 203, 202, 0.5)', width: '100%' }}>
         <Grid container spacing={2} wrap={'nowrap'}>
-            <Grid item xs={2} lg={1}>
+            <Grid item xs={2}>
                 <TheySaidSoContainer>
                     <TheySaidSoAttribution href="https://theysaidso.com" title="Powered by quotes from theysaidso.com" >
                         <img src="https://theysaidso.com/branding/theysaidso.png" height="auto" width="100%" alt="theysaidso.com" />
                     </TheySaidSoAttribution>
                 </TheySaidSoContainer>
             </Grid>
-            <Grid item container xs={8} lg={10} m={1}>
+            <Grid item container xs={8} m={1}>
                 <ThemeProvider theme={theme}>
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" gutterBottom textAlign={'center'} component="div" >
+                    <Grid item xs={12} lg={12}>
+                        <Typography variant="subtitle1" gutterBottom noWrap textAlign={'center'} component="div" >
                             {qod?.quote}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} lg={12}>
                         <Typography variant="subtitle1" gutterBottom textAlign={'center'} component="div" >
                             {qod?.author}
                         </Typography>
                     </Grid>
                 </ThemeProvider>
             </Grid>
-            <Grid item xs={2} lg={1} container alignItems={'center'}>
+            <Grid item xs={2} container alignItems={'center'}>
                 <QuoteModal
                     buttonText={'Learn more'}
                     headerText={'Quote of the day'}
