@@ -1,7 +1,7 @@
 const weatherApiKey = '6e95be333e976ec7511e4989d48958fe';
 
 export const getWeatherByCityName = async (cityName) => {
-    console.log(cityName);
+    // console.log(cityName);
 
     if (!cityName) return null;
     cityName = cityName.toLowerCase();

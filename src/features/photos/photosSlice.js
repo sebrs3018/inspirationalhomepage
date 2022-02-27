@@ -1,34 +1,52 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getRandomPhotoAsync } from './photosApi';
 
+
+export const nextPhoto = createAsyncThunk(
+    'photos/nextPhoto',
+    async (id, thunkAPI) => {
+        const photos = selectPhotos(thunkAPI.getState());
+        const curIndex = photos.findIndex(p => p.id === id);
+        if (curIndex === photos.length - 1)
+            thunkAPI.dispatch(fetchRandomPhoto());
+        else{
+            const nPhoto = photos[curIndex + 1];
+            thunkAPI.dispatch(setCurrentPhoto(nPhoto))
+        }
+    }
+);
+
 export const fetchRandomPhoto = createAsyncThunk(
     'photos/getRandomPhoto',
     async (args, thunkAPI) => {
         const { photoToShowUrl, id } = await getRandomPhotoAsync();
-        thunkAPI.dispatch(setCurrentPhoto({ url:  photoToShowUrl, id: id }));
-        // return photoUrl;
+        const newPhoto = { url: photoToShowUrl, id: id };
+        thunkAPI.dispatch(addNewPhoto(newPhoto));
+        thunkAPI.dispatch(setCurrentPhoto(newPhoto));
     }
 );
 
 const photosSlice = createSlice({
     name: 'photos',
     initialState: {
-       photosUrl: [],
-       currentPhotoUrl: {},
+        photosUrl: [],
+        currentPhotoUrl: {},
     },
     reducers: {
-        setCurrentPhoto: (state, action) => {
+        addNewPhoto: (state, action) => {
             let { photosUrl } = state;
-            state.currentPhotoUrl = action.payload;
             photosUrl.push(action.payload);
+        },
+        setCurrentPhoto: (state, action) => {
+            state.currentPhotoUrl = action.payload;
         },
         previousPhoto: (state, action) => {
             const { id } = action.payload;
             const { photosUrl } = state;
-            const currentIndex = photosUrl.findIndex( p => p.id === id );
+            const currentIndex = photosUrl.findIndex(p => p.id === id);
             const length = photosUrl.length;
-            const prevIndex = Math.abs(currentIndex - 1);
-            state.currentPhotoUrl = photosUrl[prevIndex % length];
+            const prevIndex = currentIndex - 1;
+            state.currentPhotoUrl = photosUrl[prevIndex < 0 ? length - 1 : prevIndex];
         }
     },
     extraReducers: {
@@ -44,6 +62,7 @@ const photosSlice = createSlice({
     }
 });
 
+export const selectPhotos = state => state.photos.photosUrl;
 export const selectCurrentPhotoUrl = state => state.photos.currentPhotoUrl;
-export const { setCurrentPhoto, previousPhoto } = photosSlice.actions;
+export const { setCurrentPhoto, previousPhoto, addNewPhoto } = photosSlice.actions;
 export default photosSlice.reducer;

@@ -32,7 +32,8 @@ import { Weather } from './features/weather/Weather';
 import { 
   selectCurrentPhotoUrl,
   fetchRandomPhoto,
-  previousPhoto
+  previousPhoto,
+  nextPhoto
  } from './features/photos/photosSlice';
 
 let theme = createTheme();
@@ -44,7 +45,7 @@ function App() {
   let randomPhoto = useSelector(selectCurrentPhotoUrl);
 
   const handleNextClick = () => {
-    dispatch(fetchRandomPhoto());
+    dispatch(nextPhoto(randomPhoto?.id));
   }
 
   const handlePrevClick = () => {
@@ -54,9 +55,10 @@ function App() {
 
   useEffect(() => {
     if (!randomPhoto || Object.keys(randomPhoto).length === 0) {
+      console.log('gettin a new photo!');
       dispatch(fetchRandomPhoto());
     }
-  }, []);
+  }, [randomPhoto, dispatch]);  //Thanks to the conditional control, the photo fetching will be called once!
 
   const styles = {
     testBackground: {

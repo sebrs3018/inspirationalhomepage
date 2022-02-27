@@ -19,9 +19,10 @@ export const Weather = () => {
 
     useEffect(() => {
         if (!weather || Object.keys(weather).length === 0) {
+            console.log('getting the meteo');
             dispatch(fetchWeatherByCity('sevilla'));
         }
-    }, []);
+    }, [weather, dispatch]); 
 
     return <div style={{ position: 'absolute', right: 20, top: 20 }}>
         <Paper elevation={1} sx={{ backgroundColor: 'rgba(40, 175, 176, 0.8)', color: 'white' }}>

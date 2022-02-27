@@ -25,7 +25,6 @@ const theme = createTheme({
 });
 
 
-
 export const GoalChip = ({ description, id, completed }) => {
     const [props, setProps] = useState({
         variant: 'outlined',
@@ -38,7 +37,6 @@ export const GoalChip = ({ description, id, completed }) => {
         dispatcher(removeGoal({ id: id }));
     }
 
-    //TODO: da correggere colore!
     const handleClick = (id) => {
         if(!completed){
             dispatcher(markAsComplete({ id: id }));

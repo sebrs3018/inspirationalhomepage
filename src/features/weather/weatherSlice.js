@@ -4,7 +4,7 @@ import { getWeatherByCityName } from './weatherApi';
 export const fetchWeatherByCity = createAsyncThunk(
     'weather/fetchWeatherByCity',
     async (cityName, thunkAPI) => {
-        console.log(cityName);
+        // console.log(cityName);
         const response = await getWeatherByCityName(cityName);
         thunkAPI.dispatch(setWeather(response));
         return response;
