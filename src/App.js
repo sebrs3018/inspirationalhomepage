@@ -1,26 +1,19 @@
+import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { createApi } from 'unsplash-js';
 import {
   Grid,
   Stack,
   Paper,
   IconButton,
-  Button,
-  Modal
+  Typography
 } from '@mui/material';
 
 
-import Typography from '@mui/material/Typography';
-
 /* Styled components */
 import {
-  AsideSection,
-  TheySaidSoContainer,
-  TheySaidSoAttribution
+  AsideSection
 } from './StyledComponents/styledComponents';
-
-
 
 /* Icons */
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -35,35 +28,19 @@ import { Goals } from './features/goals/Goals';
 import { QuoteOfTheDay } from './app/component/QuoteOfTheDay';
 
 
+/* Selectors and actions */
+import { 
+  selectCurrentPhotoUrl,
+  fetchRandomPhoto,
+  previousPhoto
+ } from './features/photos/photosSlice';
+
+
+
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 
 const weatherApiKey = '6e95be333e976ec7511e4989d48958fe';
-
-const unsplash = createApi({
-  accessKey: 'nvsbiflO7X6Hlunn1K1KCQtJAb-bb79xr0LLQgAnndE',
-  fetch: fetch,
-});
-
-
-const getRandomPhotoAsync = async (setUrlFunc) => {
-  try {
-    const result = await unsplash.photos.getRandom({
-      collectionIds: ['11649432']
-    });
-    if (result.errors) {
-      console.log('some error happened!');
-    }
-    else {
-      const photo = result.response;
-      const photoToShowUrl = photo.urls.full; //da gestire con redux
-      setUrlFunc(photoToShowUrl);
-    }
-  }
-  catch (err) {
-    console.log(err);
-  }
-}
 
 const getWeatherByCityName = async (cityName, setWeather) => {
   if (!cityName) return null;
@@ -89,15 +66,26 @@ const getWeatherByCityName = async (cityName, setWeather) => {
 
 function App() {
 
-  const [randomPhoto, setRandomPhoto] = useState(''); //Da gestire con redux
-  const [qod, setQod] = useState(null);
   const [weather, setWeather] = useState(null);
 
+  const dispatch = useDispatch();
+  let randomPhoto = useSelector(selectCurrentPhotoUrl);
+
+
+  const handleNextClick = () => {
+    dispatch(fetchRandomPhoto());
+  }
+
+  const handlePrevClick = () => {
+    dispatch(previousPhoto({id: randomPhoto?.id}));
+  }
+
+
   useEffect(() => {
-    if (!randomPhoto) {
-      getRandomPhotoAsync(setRandomPhoto);
+    if (!randomPhoto || Object.keys(randomPhoto).length === 0) {
+      dispatch(fetchRandomPhoto());
     }
-  }, [randomPhoto]);
+  }, []);
 
 
   useEffect(() => {
@@ -108,22 +96,10 @@ function App() {
   }, [weather]);
 
 
-  const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
-
   const styles = {
     testBackground: {
       backgroundImage:
-        `linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), url(${randomPhoto})`,
+        `linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), url(${randomPhoto?.url})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
     }
@@ -168,7 +144,7 @@ function App() {
         {/* Previous Slide Section */}
         <Grid item xs={1}>
           <AsideSection>
-            <IconButton aria-label='previous foto' sx={{ maxWidth: 50 }}>
+            <IconButton aria-label='previous foto' sx={{ maxWidth: 50 }} onClick={handlePrevClick}>
               <ArrowBackIosNewIcon fontSize='large' />
             </IconButton>
           </AsideSection>
@@ -212,7 +188,7 @@ function App() {
         {/* Next Slide Section */}
         <Grid item xs={1}>
           <AsideSection>
-            <IconButton aria-label='previous foto' sx={{ maxWidth: 50 }}>
+            <IconButton aria-label='previous foto' sx={{ maxWidth: 50 }} onClick={ handleNextClick }>
               <ArrowForwardIosIcon fontSize='large' />
             </IconButton>
           </AsideSection>

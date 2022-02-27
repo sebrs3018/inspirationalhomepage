@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
-
-
-
+import { QuoteModal } from "./QuoteModal";
 
 import {
     Paper,
     Grid,
-    Modal,
-    Button,
     Typography
 } from "@mui/material";
-
-
-
 
 
 import {
@@ -28,31 +21,29 @@ theme = responsiveFontSizes(theme);
 const QuotesApiUrl = 'https://quotes.rest/qod?category=inspire&language=en';
 
 const getQuoteOfTheDay = async (setQuote) => {
-  try {
-    const data = await fetch(QuotesApiUrl);
-    const json = await data.json();
-    const { quotes } = json.contents;
-    const { quote, author } = quotes[0];  //Getting the single quote of the day
-    setQuote({ quote, author });
-  }
-  catch (err) {
+    try {
+        const data = await fetch(QuotesApiUrl);
+        const json = await data.json();
+        const { quotes } = json.contents;
+        const { quote, author } = quotes[0];  //Getting the single quote of the day
+        setQuote({ quote, author });
+    }
+    catch (err) {
 
-  }
+    }
 };
 
-
-//TODO: inserire modal per far vedere l'intera citazione!
 export const QuoteOfTheDay = () => {
 
     const [qod, setQod] = useState(null);
 
     useEffect(() => {
         if (!qod)
-          getQuoteOfTheDay(setQod);
-      }, [qod]);
+            getQuoteOfTheDay(setQod);
+    }, [qod]);
 
 
-    
+
     return <Paper sx={{ backgroundColor: 'rgba(207, 203, 202, 0.8)', width: '100%' }}>
         <Grid container spacing={2} wrap={'nowrap'}>
             <Grid item xs={2} lg={1}>
@@ -62,20 +53,27 @@ export const QuoteOfTheDay = () => {
                     </TheySaidSoAttribution>
                 </TheySaidSoContainer>
             </Grid>
-            <Grid item container xs={8} lg={10} m={1} alignItems={'center'} justifyContent={'center'}>
+            <Grid item container xs={8} lg={10} m={1}>
                 <ThemeProvider theme={theme}>
-                    <Typography variant="subtitle1" gutterBottom noWrap={true} component="div" >
-                        {qod?.quote}
-                    </Typography>
-                    <Typography variant="subtitle1" gutterBottom component="div" >
-                        {qod?.author}
-                    </Typography>
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" gutterBottom textAlign={'center'} component="div" >
+                            {qod?.quote}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" gutterBottom textAlign={'center'} component="div" >
+                            {qod?.author}
+                        </Typography>
+                    </Grid>
                 </ThemeProvider>
             </Grid>
             <Grid item xs={2} lg={1} container alignItems={'center'}>
-                <Button variant="text">
-                    <Typography variant="button" gutterBottom display="block" textAlign={"center"}>Learn more</Typography>
-                </Button>
+                <QuoteModal
+                    buttonText={'Learn more'}
+                    headerText={'Quote of the day'}
+                    quoteText={qod?.quote}
+                    quoteAuthor={qod?.author}
+                />
             </Grid>
 
         </Grid>
