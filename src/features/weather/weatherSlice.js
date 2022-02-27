@@ -4,7 +4,6 @@ import { getWeatherByCityName } from './weatherApi';
 export const fetchWeatherByCity = createAsyncThunk(
     'weather/fetchWeatherByCity',
     async (cityName, thunkAPI) => {
-        // console.log(cityName);
         const response = await getWeatherByCityName(cityName);
         thunkAPI.dispatch(setWeather(response));
         return response;
@@ -27,6 +26,10 @@ const weatherSlice = createSlice({
         },
         [fetchWeatherByCity.pending]: (state, action) => {
             console.log('pending');
+            state.weather = {
+                description: 'loading', 
+                temperature: 'loading'
+            }
         },
         [fetchWeatherByCity.rejected]: (state, action) => {
             console.log('rejected');
